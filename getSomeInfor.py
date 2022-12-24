@@ -41,4 +41,4 @@ with open("metadata/val.txt", "r", encoding="utf8") as fr:
         val_videos_list.append(folder_name + "/" + line.replace("\n", "").split()[0])
 
 ### Có tổng cộng 12 class
-num_classes = len(list(set(train_labels_list + val_labels_list)))
+num_classes = 12
