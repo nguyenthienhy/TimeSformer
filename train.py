@@ -116,7 +116,7 @@ if __name__ == '__main__':
                 
                 valAccuracy = accuracy_score(labels_true, preds)
 
-                print(time.strftime("%Y-%m-%d %H:%M:%S"), "[%d], valAccuracy %2.2f%%, ValLoss %.5f " %(epoch, valAccuracy, val_loss/index))
+                print(time.strftime("%Y-%m-%d %H:%M:%S"), "[%d], valAccuracy %2.2f%%, valLoss %.5f " %(epoch, valAccuracy, val_loss/index))
 
         if epoch >= max_epoch:
             quit()
