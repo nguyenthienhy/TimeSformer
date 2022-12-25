@@ -114,7 +114,7 @@ if __name__ == '__main__':
                         if pred == label:
                             count_true += 1
             
-            print(time.strftime("%Y-%m-%d %H:%M:%S"), "[%d], ValAccuracy %2.2f%%, ValLoss %.5f " %(epoch, count_true / valLoader.__len__(), val_loss))
+                print(time.strftime("%Y-%m-%d %H:%M:%S"), "[%d], ValAccuracy %2.2f%%, ValLoss %.5f " %(epoch, count_true / valLoader.__len__(), val_loss/index))
 
         if epoch >= max_epoch:
             quit()
