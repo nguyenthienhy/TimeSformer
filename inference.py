@@ -5,7 +5,7 @@ import config
 import cv2
 import numpy as np
 
-min_video_frames = 32 # Thông số này được tính trong getSomeInfor.py
+min_video_frames = 8 # Thông số này được tính trong getSomeInfor.py
 
 model = torch.nn.Sequential(
     TimeSformer(dim=config.DIM,

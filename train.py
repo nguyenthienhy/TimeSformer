@@ -10,8 +10,8 @@ from tqdm import tqdm
 from getSomeInfor import *
 from sklearn.metrics import accuracy_score, f1_score, precision_score, recall_score
 
-num_frames_to_take = min_video_frames # Lựa chọn số frames trong 1 video để trích xuất đặc trưng, thông số NUM_FRAMES của mô hình cũng cần tương tự
-# num_frames_to_take = 32
+# num_frames_to_take = min_video_frames # Lựa chọn số frames trong 1 video để trích xuất đặc trưng, thông số NUM_FRAMES của mô hình cũng cần tương tự
+num_frames_to_take = 8
 
 ### Tạo các dataloader
 
