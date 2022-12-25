@@ -1,3 +1,6 @@
+import os
+os.environ["CUDA_VISIBLE_DEVICES"]="MIG-b0dc7640-8329-5aa9-a5eb-71c8d36164b1"  # specify which GPU(s) to be used
+
 from model import TimeSformer
 from dataLoader import DataLoader
 from torch import nn
@@ -9,15 +12,16 @@ import time
 from tqdm import tqdm
 from getSomeInfor import *
 
-num_frames_to_take = int(min_video_frames / config.FRAMES_INTERVAL) - 1
+num_frames_to_take = min_video_frames # Lựa chọn số frames trong 1 video để trích xuất đặc trưng, thông số NUM_FRAMES của mô hình cũng cần tương tự
+# num_frames_to_take = 32
 
 ### Tạo các dataloader
 
 trainloader = DataLoader(videos_list=train_videos_list, labels_list=train_labels_list, num_frames_to_take=num_frames_to_take)
-trainLoader = torch.utils.data.DataLoader(trainloader, batch_size=config.BATCH_SIZE, shuffle=True, num_workers=2, drop_last=True)
+trainLoader = torch.utils.data.DataLoader(trainloader, batch_size=config.BATCH_SIZE, shuffle=True, num_workers=4, drop_last=True)
 
 valloader = DataLoader(videos_list=val_videos_list, labels_list=val_labels_list, num_frames_to_take=num_frames_to_take)
-valLoader = torch.utils.data.DataLoader(valloader, batch_size=config.BATCH_SIZE, shuffle=True, num_workers=2, drop_last=True)
+valLoader = torch.utils.data.DataLoader(valloader, batch_size=config.BATCH_SIZE, shuffle=True, num_workers=4, drop_last=True)
 
 ### Khởi tạo model
 
