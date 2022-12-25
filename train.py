@@ -44,12 +44,11 @@ max_epoch = 100
 test_step = 1
 lr = 0.01
 lr_decay = 0.97
-weight_decay = 2e-5
 
 if __name__ == '__main__':
 
     loss_fn = torch.nn.MSELoss(reduction='sum')
-    optim = torch.optim.Adam(model.parameters(), lr=lr, weight_decay=weight_decay)
+    optim = torch.optim.Adam(model.parameters(), lr=lr)
     scheduler = torch.optim.lr_scheduler.StepLR(optim, step_size=test_step, gamma=lr_decay)
 
     while True:
