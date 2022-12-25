@@ -14,7 +14,7 @@ class DataLoader:
   def __getitem__(self, index):
     frames = []
     frames_list = glob.glob(self.videos_list[index] + "/*") # List các đường dẫn frames trong một video
-    frames_list = shuffle(frames_list)
+    frames_list = sorted(frames_list, key=lambda x: int(x.split("/")[-1].split("_")[1].split(".")[0]), reverse=False) # Phải sắp xếp thứ tự các frames từ 1 đến n ...
     frames_list = frames_list[0:self.num_frames_to_take] # Lấy ra số lượng frames trong một video
     for frame_path in frames_list:
       ### Đọc dữ liệu ảnh ###
@@ -28,7 +28,6 @@ class DataLoader:
 
   def __len__(self):
     return len(self.videos_list)
-
 
 if __name__ == "__main__":
   dataloader = DataLoader(glob.glob("rgb_frames/*"), [0 for _ in glob.glob("rgb_frames/*")], 10)
