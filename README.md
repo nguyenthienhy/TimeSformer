@@ -65,6 +65,11 @@ First, create a conda virtual environment and activate it:
 conda create -n timesformer python=3.7 -y
 source activate timesformer
 ```
+Or using python >= 3.7 with vitrual-env
+```
+sudo apt-get install python3-env
+python3 -m venv env
+```
 
 Then, install the following packages:
 
@@ -73,7 +78,7 @@ Then, install the following packages:
 - simplejson: `pip install simplejson`
 - einops: `pip install einops`
 - timm: `pip install timm`
-- PyAV: `conda install av -c conda-forge`
+- PyAV: `conda install av -c conda-forge` or `pip install av`
 - psutil: `pip install psutil`
 - scikit-learn: `pip install scikit-learn`
 - OpenCV: `pip install opencv-python`
@@ -99,7 +104,6 @@ Training the default TimeSformer that uses divided space-time attention, and ope
 ```
 python tools/run_net.py \
   --cfg configs/Kinetics/vn.yaml \
-  DATA.PATH_TO_DATA_DIR path_to_your_dataset \
   NUM_GPUS 1 \
   TRAIN.BATCH_SIZE 4 \
 ```
