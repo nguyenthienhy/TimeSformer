@@ -40,11 +40,12 @@ model = torch.nn.Sequential(
 epoch = 1
 max_epoch = 100
 test_step = 1
-lr = 0.005
+lr = 0.001
 lr_decay = 0.97
 weight_decay = 2e-5
 
-loss_fn = torch.nn.MSELoss(reduction='sum') ### Hàm loss này có thể sử dụng CrossEntropy, ...
+# loss_fn = torch.nn.MSELoss(reduction='sum') ### Hàm loss này có thể sử dụng CrossEntropy, ...
+loss_fn = torch.nn.CrossEntropyLoss() ### Hàm loss này có thể sử dụng CrossEntropy, ...
 optim = torch.optim.Adam(model.parameters(), lr=lr, weight_decay=weight_decay)
 scheduler = torch.optim.lr_scheduler.StepLR(optim, step_size=test_step, gamma=lr_decay)
 
