@@ -1,3 +1,10 @@
+
+
+
+
+# Docker file from Python is inspired from here :
+# https://github.com/github/gitignore/blob/master/Python.gitignore
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -20,7 +27,6 @@ parts/
 sdist/
 var/
 wheels/
-pip-wheel-metadata/
 share/python-wheels/
 *.egg-info/
 .installed.cfg
@@ -38,9 +44,7 @@ pip-log.txt
 pip-delete-this-directory.txt
 
 # Unit test / coverage reports
-htmlcov/
-.tox/
-.nox/
+tests/report/
 .coverage
 .coverage.*
 .cache
@@ -72,6 +76,7 @@ instance/
 docs/_build/
 
 # PyBuilder
+.pybuilder/
 target/
 
 # Jupyter Notebook
@@ -82,7 +87,9 @@ profile_default/
 ipython_config.py
 
 # pyenv
-.python-version
+#   For a library or package, you might want to ignore these files since the code is
+#   intended to run in multiple environments; otherwise, check them in:
+# .python-version
 
 # pipenv
 #   According to pypa/pipenv#598, it is recommended to include Pipfile.lock in version control.
@@ -128,5 +135,10 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
-rgb_frames/
+# pytype static type analyzer
+.pytype/
 
+
+# Cython debug symbols
+cython_debug/
+data/videos

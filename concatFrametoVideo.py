@@ -2,10 +2,11 @@ import cv2
 import glob
 from tqdm import tqdm
 
-DATA_PATH = "rgb_frames"
+DATA_PATH = "data/rgb_frames"
 
 for folder in tqdm(glob.glob(DATA_PATH + "/*")):
     images = glob.glob(folder + "/*.jpg")
+    images = sorted(images, key=lambda x: int(x.split("\\")[-1].split("_")[1].split(".")[0]), reverse=False)
     img_array = []
     for image in images:
         img = cv2.imread(image)
