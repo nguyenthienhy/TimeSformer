@@ -68,7 +68,7 @@ source activate timesformer
 
 Then, install the following packages:
 
-- torchvision: `pip install torchvision` or `conda install torchvision -c pytorch`
+- torchvision: `pip install torchvision` or `conda install torchvision -c pytorch`, must install torch <= 1.9.0
 - [fvcore](https://github.com/facebookresearch/fvcore/): `pip install 'git+https://github.com/facebookresearch/fvcore'`
 - simplejson: `pip install simplejson`
 - einops: `pip install einops`
@@ -98,10 +98,10 @@ Training the default TimeSformer that uses divided space-time attention, and ope
 
 ```
 python tools/run_net.py \
-  --cfg configs/Kinetics/TimeSformer_divST_8x32_224.yaml \
+  --cfg configs/Kinetics/vn.yaml \
   DATA.PATH_TO_DATA_DIR path_to_your_dataset \
-  NUM_GPUS 8 \
-  TRAIN.BATCH_SIZE 8 \
+  NUM_GPUS 1 \
+  TRAIN.BATCH_SIZE 4 \
 ```
 You may need to pass location of your dataset in the command line by adding `DATA.PATH_TO_DATA_DIR path_to_your_dataset`, or you can simply add
 
