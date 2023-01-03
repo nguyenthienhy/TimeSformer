@@ -14,8 +14,8 @@ class DataLoader:
   def __getitem__(self, index):
     frames = []
     frames_list = glob.glob(self.videos_list[index] + "/*") # List các đường dẫn frames trong một video
-    frames_list = shuffle(frames_list)
-    frames_list = frames_list[0:self.num_frames_to_take] # Lấy ra số lượng frames trong một video
+    frames_list = sorted(frames_list, key=lambda x: int(x.split("/")[-1].split("_")[1].split(".")[0]), reverse=False) # Phải sắp xếp thứ tự các frames từ 1 đến n ...
+    # frames_list = frames_list[0:self.num_frames_to_take] # Lấy ra số lượng frames trong một video
     for frame_path in frames_list:
       ### Đọc dữ liệu ảnh ###
       frame = cv2.imread(frame_path, cv2.IMREAD_COLOR)
@@ -23,12 +23,15 @@ class DataLoader:
       frames.append(frame)
       ## Kết thúc đọc dữ liệu ảnh ###
     frames = np.array(frames)
+    frames = torch.FloatTensor(frames)
+    index_tmp = torch.linspace(0, len(frames_list), self.num_frames_to_take)
+    index_tmp = torch.clamp(index_tmp, 0, frames.shape[0] - 1).long()
+    frames = torch.index_select(frames, 0, index_tmp)
     label = self.labels_list[index]
-    return torch.FloatTensor(frames), label
+    return frames, label
 
   def __len__(self):
     return len(self.videos_list)
-
 
 if __name__ == "__main__":
   dataloader = DataLoader(glob.glob("rgb_frames/*"), [0 for _ in glob.glob("rgb_frames/*")], 10)

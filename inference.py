@@ -5,7 +5,7 @@ import config
 import cv2
 import numpy as np
 
-min_video_frames = 32 # Thông số này được tính trong getSomeInfor.py
+min_video_frames = 8 # Thông số này được tính trong getSomeInfor.py
 
 model = torch.nn.Sequential(
     TimeSformer(dim=config.DIM,
@@ -37,15 +37,15 @@ def predict(video_file_name):
 
     while success:    
 
-        if considered_frames_counter == int(min_video_frames / config.FRAMES_INTERVAL) - 1:
+        if considered_frames_counter == min_video_frames:
             break
 
         success, image = vidcap.read()
         
-        if considered_frames_counter == config.FRAMES_INTERVAL:
+        if considered_frames_counter == min_video_frames:
             cv2.imshow(video_file_name, cv2.resize(image, (224, 224)))
         
-        if success and considered_frames_counter % config.FRAMES_INTERVAL == 0:
+        if success and considered_frames_counter % min_video_frames == 0:
             image = np.transpose(np.asarray(cv2.resize(image, (224, 224))), (2, 0, 1))
             frames.append(image)
         

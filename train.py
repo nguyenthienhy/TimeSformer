@@ -8,16 +8,18 @@ import sys
 import time
 from tqdm import tqdm
 from getSomeInfor import *
+from sklearn.metrics import accuracy_score, f1_score, precision_score, recall_score
 
-num_frames_to_take = int(min_video_frames / config.FRAMES_INTERVAL) - 1
+# num_frames_to_take = min_video_frames # Lựa chọn số frames trong 1 video để trích xuất đặc trưng, thông số NUM_FRAMES của mô hình cũng cần tương tự
+num_frames_to_take = 8
 
 ### Tạo các dataloader
 
 trainloader = DataLoader(videos_list=train_videos_list, labels_list=train_labels_list, num_frames_to_take=num_frames_to_take)
-trainLoader = torch.utils.data.DataLoader(trainloader, batch_size=config.BATCH_SIZE, shuffle=True, num_workers=2, drop_last=True)
+trainLoader = torch.utils.data.DataLoader(trainloader, batch_size=config.BATCH_SIZE, shuffle=True, num_workers=4)
 
 valloader = DataLoader(videos_list=val_videos_list, labels_list=val_labels_list, num_frames_to_take=num_frames_to_take)
-valLoader = torch.utils.data.DataLoader(valloader, batch_size=config.BATCH_SIZE, shuffle=True, num_workers=2, drop_last=True)
+valLoader = torch.utils.data.DataLoader(valloader, batch_size=config.BATCH_SIZE, shuffle=False, num_workers=4)
 
 ### Khởi tạo model
 
@@ -40,22 +42,24 @@ model = torch.nn.Sequential(
 epoch = 1
 max_epoch = 100
 test_step = 1
-lr = 0.001
+lr = 0.01
 lr_decay = 0.97
-weight_decay = 2e-5
-
-# loss_fn = torch.nn.MSELoss(reduction='sum') ### Hàm loss này có thể sử dụng CrossEntropy, ...
-loss_fn = torch.nn.CrossEntropyLoss() ### Hàm loss này có thể sử dụng CrossEntropy, ...
-optim = torch.optim.Adam(model.parameters(), lr=lr, weight_decay=weight_decay)
-scheduler = torch.optim.lr_scheduler.StepLR(optim, step_size=test_step, gamma=lr_decay)
 
 if __name__ == '__main__':
+
+    loss_fn = torch.nn.MSELoss(reduction='sum')
+    optim = torch.optim.Adam(model.parameters(), lr=lr)
+    scheduler = torch.optim.lr_scheduler.StepLR(optim, step_size=test_step, gamma=lr_decay)
 
     while True:
 
         model.train()
+
         scheduler.step(epoch-1)
+        
         lr = optim.param_groups[0]['lr']
+
+        loss_item = 0
 
         ## Training cho một epoch
         for index, (frames, labels) in enumerate(trainLoader, start=1):
@@ -65,9 +69,10 @@ if __name__ == '__main__':
             loss = loss_fn(y_pred, torch.FloatTensor(labels.float()).cuda())
             loss.backward()
             optim.step()
+            loss_item += loss.detach().cpu().numpy()
             sys.stderr.write(time.strftime("%m-%d %H:%M:%S") + \
                 " [%d] Lr: %5f, Training: %.2f%%, " %(epoch, lr, 100 * (index / trainLoader.__len__())) + \
-                " Loss: %.5f \r" %(loss))
+                " Loss: %.5f \r" %(loss_item/index))
             sys.stderr.flush()
         
         sys.stdout.write("\n")
@@ -79,8 +84,10 @@ if __name__ == '__main__':
 
             torch.save(model.state_dict(), config.MODEL_SAVE_PATH + "/timesformer_%04d.ckpt"%epoch)
 
-            count_true = 0
             val_loss = 0
+
+            preds = []
+            labels_true = []
 
             with torch.no_grad():
 
@@ -91,8 +98,6 @@ if __name__ == '__main__':
                     loss_val = loss_fn(y_pred, torch.FloatTensor(labels.float()).cuda()).detach().cpu().numpy()
                     val_loss += loss_val
                     y_pred_np = y_pred.detach().cpu().numpy()
-                    preds = []
-                    labels_true = []
 
                     ### y_pred có shape [batch, num_labels]
                     ### [[0, 0, 0, ... 1]
@@ -108,13 +113,12 @@ if __name__ == '__main__':
                         label = np.argmax(labels[i].detach().cpu().numpy())
                         preds.append(pred)
                         labels_true.append(label)
-                        if pred == label:
-                            count_true += 1
-            
-            print(time.strftime("%Y-%m-%d %H:%M:%S"), "[%d], ValAccuracy %2.2f%%, ValLoss %.5f " %(epoch, count_true / valLoader.__len__(), val_loss))
+                
+                valAccuracy = accuracy_score(labels_true, preds)
+
+                print(time.strftime("%Y-%m-%d %H:%M:%S"), "[%d], valAccuracy %2.2f%%, valLoss %.5f " %(epoch, valAccuracy, val_loss/index))
 
         if epoch >= max_epoch:
             quit()
 
         epoch += 1
-
