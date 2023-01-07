@@ -109,6 +109,13 @@ python tools/run_net.py \
 ```
 You may need to pass location of your dataset in the command line by adding `DATA.PATH_TO_DATA_DIR path_to_your_dataset`, or you can simply add
 
+To view tensorboard, using:
+
+```
+tensorboard  --port=[port_number] --logdir ./runs-kinetics
+Access http://localhost:[port_number]
+```
+
 ```
 DATA:
   PATH_TO_DATA_DIR: path_to_your_dataset
